@@ -8,6 +8,104 @@ import java.util.*;
  */
 public class Sudoku {
 
+    private static final int SIZE = 9;
+
+    private int[][] grid;
+    /**
+     * TODO: 3) should " Set<Integer> allPossibleValues = new HashSet<>();" be
+     * declared in the "Sudoku" class or in the "Spot" inner class? My thought
+     * is that even though it is only used in "Spot" class, if I declare it in
+     * "Spot" class, then every time I create an instance of "Spot" class, a new
+     * instance of "Set<Integer> allPossibleValues" is created. So why not put
+     * it in the outer "Sudoku" class, so that all instance of "Spot" class can
+     * use the same instance of "allPossibleValues".
+     */
+    private Set<Integer> allPossibleValues = new HashSet<>();
+
+    class Spot {
+
+        int xCoordinate, yCoordinate;
+        Set<Integer> assignableValues = new HashSet<>();
+
+        Spot(int x, int y) {
+            xCoordinate = x;
+            yCoordinate = y;
+
+            assignableValues = calculateAssignableValues();
+        }
+
+        private Set<Integer> calculateAssignableValues() {
+            Set<Integer> nonAssignableValues = calculateNonAssignableValues();
+        }
+
+        private Set<Integer> calculateNonAssignableValues() {
+            Set<Integer> nonAssignableValues = new HashSet<>();
+
+            //add all numbers from the same row as this particular instance
+            //of "Spot" to "nonAssignableValues". 
+            for (int i = 0; i < SIZE; i++) {
+                if (grid[xCoordinate][i] != 0) {
+                    nonAssignableValues.add(grid[xCoordinate][i]);
+                }
+            }
+
+            //add all numbers from the same colume as this particular instance
+            //of "Spot" to "nonAssignableValues". 
+            for(int i = 0; i < SIZE; i++){
+                if(grid[i][yCoordinate] != 0){
+                    nonAssignableValues.add(grid[i][yCoordinate]);
+                }
+            }
+            
+            //add all number from the same 3 by 3 grid (a sudoku puzzle 9 by 9 grid
+            //is made up of 9 of the 3 by 3 grid) to "nonAssignableValues"
+            int smallerGridWidthAndHeight = 3;
+            //if "xCoordinate" has value between 0 and 2, then dividing it by 3 
+            //will return 0, then times by 3 will still equal to 0. therefore
+            //for "Spot" that are located from row 0 to 2, its smaller grid 
+            //starting position is 0. Same principle apply for "startingColumePositionFor3By3Grid".
+            int startingRowPositionFor3By3Grid = (xCoordinate / 3) * 3; 
+            /**
+             * TODO: 4) magic number 3 is used in calculating variable "startingColumePositionFor3By3Grid",
+             * should I come up with a way to get rid of it? 
+             * But it is something so simple, is it worthwhile get rid of it?
+             * but on the other hand, there should not be magic number laying around.
+             */
+            int startingColumePositionFor3By3Grid = (yCoordinate / 3) * 3;
+            for(int i = startingRowPositionFor3By3Grid; i < smallerGridWidthAndHeight; i++){
+                for(int j = startingColumePositionFor3By3Grid; j < smallerGridWidthAndHeight; j++){
+                    nonAssignableValues.add(grid[i][j]);
+                }
+            }
+            
+            return nonAssignableValues;
+        }
+    }
+
+    /**
+     * this is the initializer that perform the basic common setup, this
+     * initializer should be called by other initializer that belong to the same
+     * class
+     */
+    private Sudoku() {
+        for (int i = 0; i < SIZE; i++) {
+            allPossibleValues.add(i);
+        }
+    }
+
+    /**
+     * Sets up based on the given ints.
+     *
+     * @param ints
+     */
+    public Sudoku(int[][] ints) {
+        this();
+
+        for (int[] int1 : ints) {
+            System.arraycopy(ints, 0, grid, 0, ints.length);
+        }
+    }
+
     // Provided grid data for main/testing
     // The instance variable strategy is up to you.
     // Provided easy 1 6 grid
@@ -127,15 +225,7 @@ public class Sudoku {
         System.out.println("solutions:" + count);
         System.out.println("elapsed:" + sudoku.getElapsed() + "ms");
         System.out.println(sudoku.getSolutionText());
-        System.out.println("hi");
 
-    }
-
-    /**
-     * Sets up based on the given ints.
-     */
-    public Sudoku(int[][] ints) {
-        // YOUR CODE HERE
     }
 
     /**
