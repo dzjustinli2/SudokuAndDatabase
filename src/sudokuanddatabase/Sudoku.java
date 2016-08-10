@@ -22,20 +22,29 @@ public class Sudoku {
      */
     private Set<Integer> allPossibleValues = new HashSet<>();
 
-    class Spot {
+    class Spot implements Comparable<Spot>{
 
         int xCoordinate, yCoordinate;
-        Set<Integer> assignableValues = new HashSet<>();
+        Set<Integer> assignableValues;
+        int assignableValueSize;
 
         Spot(int x, int y) {
             xCoordinate = x;
             yCoordinate = y;
-
             assignableValues = calculateAssignableValues();
+            assignableValueSize = assignableValues.size();
         }
 
         private Set<Integer> calculateAssignableValues() {
+            
+            Set<Integer> potentiallyAssignableValues = new HashSet<>(allPossibleValues);
+            
             Set<Integer> nonAssignableValues = calculateNonAssignableValues();
+            
+            potentiallyAssignableValues.removeAll(nonAssignableValues);
+            
+            return potentiallyAssignableValues;
+            
         }
 
         private Set<Integer> calculateNonAssignableValues() {
@@ -79,6 +88,16 @@ public class Sudoku {
             }
             
             return nonAssignableValues;
+        }
+
+        @Override
+        public int compareTo(Spot o) {
+            return Integer.compare(this.assignableValueSize, o.assignableValueSize);
+        }
+
+        @Override
+        public String toString(){
+            return "Spot location: row " + xCoordinate + ", colume " + yCoordinate;
         }
     }
 
@@ -146,7 +165,6 @@ public class Sudoku {
             "0 0 0 5 3 0 9 0 0",
             "0 3 0 0 0 0 0 5 1");
 
-    public static final int SIZE = 9;  // size of the whole 9x9 puzzle
     public static final int PART = 3;  // size of each 3x3 part
     public static final int MAX_SOLUTIONS = 100;
 
