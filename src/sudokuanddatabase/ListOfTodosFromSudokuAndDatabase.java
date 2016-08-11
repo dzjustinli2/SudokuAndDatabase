@@ -36,3 +36,13 @@ public class ListOfTodosFromSudokuAndDatabase {
  * of it? But it is something so simple, is it worthwhile get rid of it? but on
  * the other hand, there should not be magic number laying around.
  */
+/**
+ * TODO: 5) in assignment requirement, it is assumed that the given incomplete sudoku board
+ * is correct, i.e. all assigned value to the imcomplete sudoku board is legal and corrent.
+ * But I want to create something that can check if the given imcomplete sudoku board is corrent,
+ * i.e. do not assume that the given sudoku puzzle is correct, have to perform the check myself 
+ */
+/**
+ * TODO: 6) assignment assume that all number entered is between 0 - 9, create a sudoku that does 
+ * not assume this. i.e. check if number is valid between 0 - 9 before preceed.
+ */
